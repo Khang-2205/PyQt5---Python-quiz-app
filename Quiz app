@@ -1,0 +1,212 @@
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QLabel, QRadioButton,QVBoxLayout,QHBoxLayout,QGroupBox,QButtonGroup
+from random import shuffle, randint
+
+class Question():
+    def __init__(self,question,right,wrong1,wrong2,wrong3):
+        self.question = question
+        self.right = right
+        self.wrong1 = wrong1
+        self.wrong2 = wrong2
+        self.wrong3 = wrong3
+pyqt5question = []
+pyqt5question.append(Question("Which method is used to set the size of a window in PyQt5?","setGeometry()","setHeight()","setSize()","setWidth()"))
+pyqt5question.append(Question("How do you create a button in PyQt5?","QPushButton()","QButton()","QButton()","createButton()"))
+pyqt5question.append(Question("Which layout is used to arrange widgets in a grid?","QGridLayout","QVBoxLayout","QHBoxLayout","QBoxLayout"))
+pyqt5question.append(Question("How do you set the title of a PyQt5 window?","setWindowTitle()","setText()","setLabel()","setTitle()"))
+pyqt5question.append(Question("Which signal is emitted when a checkbox is checked or unchecked?","stateChanged()","valueChanged()","clicked()","textChanged()"))
+pyqt5question.append(Question("What is the purpose of the QComboBox widget?","to display a list of options","to display a message box","to display a text input field","to display an image"))
+pyqt5question.append(Question("Which widget should be used for displaying images in PyQt5?","QLabel","QLineEdit","QComboBox","QSpinBox"))
+pyqt5question.append(Question("Which method is used to set the background color of a widget in PyQt5?","setPalette()","setColor()","setStyle()","setBackgroundColor()"))
+pyqt5question.append(Question("How do you create a menu bar in PyQt5?","QMenuBar()","MenuBar()","createMenuBar()","addMenuBar()"))
+pyqt5question.append(Question("What is the purpose of the QSpinBox widget?","to display a number input field","to display a text input field","to display a message box","to display a list of options"))
+
+
+
+
+app = QApplication([])
+my_window = QWidget()
+my_window.resize(400,300)
+my_window.setWindowTitle("Quiz from AlgoVSCode 1.0")
+
+question = QLabel("What's the 2 most important import when working with PyQt5?")
+radioGroup = QGroupBox("Answer")
+radio1 = QRadioButton("QApplication, QWidget")
+radio2 = QRadioButton("QLabel, QRadioButton")
+radio3 = QRadioButton("QVBoxLayout,QHBoxLayout")
+radio4 = QRadioButton("QGroupBox,QWidget")
+answer = QPushButton("Answer")
+
+
+
+my_button = QButtonGroup()
+my_button.addButton(radio1)
+my_button.addButton(radio2)
+my_button.addButton(radio3)
+my_button.addButton(radio4)
+
+
+
+
+
+
+
+
+col = QVBoxLayout()
+row1 = QHBoxLayout()
+row2 = QHBoxLayout()
+row1.addWidget(radio1, alignment = Qt.AlignCenter)
+row1.addWidget(radio2, alignment = Qt.AlignCenter)
+row2.addWidget(radio3, alignment = Qt.AlignCenter)
+row2.addWidget(radio4, alignment = Qt.AlignCenter)
+
+
+
+
+
+
+col.addLayout(row1)
+col.addLayout(row2)
+
+
+
+radioGroup.setLayout(col)
+
+
+
+statgroupbox = QGroupBox("Statistic:")
+total_question = QLabel("Total question:")
+the_score = QLabel("Score:")
+score = QLabel("0")
+the_rating = QLabel("Your rating:")
+
+statlayout = QVBoxLayout()
+statlayout.addWidget(total_question,alignment =Qt.AlignCenter)
+statlayout.addWidget(the_score,alignment =Qt.AlignCenter)
+score = QLabel("0")
+statlayout.addWidget(the_rating,alignment =Qt.AlignCenter)
+statgroupbox.setLayout(statlayout)
+
+
+
+
+
+ansgroupbox = QGroupBox("Results:")
+anstext = QLabel("Correct or Incorrect")
+resulttext = QLabel("The right answer will be here! ")
+
+answerlayout = QVBoxLayout()
+answerlayout.addWidget(anstext,alignment =Qt.AlignCenter)
+answerlayout.addWidget(resulttext,alignment =Qt.AlignCenter)
+ansgroupbox.setLayout(answerlayout)
+
+
+
+top = QHBoxLayout()
+middle = QHBoxLayout()
+middle2 = QHBoxLayout()
+bottom = QHBoxLayout()
+top.addWidget(question, alignment = Qt.AlignCenter)
+middle.addWidget(radioGroup, alignment = Qt.AlignVCenter)
+middle.addWidget(ansgroupbox, alignment = Qt.AlignVCenter)
+ansgroupbox.hide()
+middle2.addWidget(statgroupbox)
+# middle2.addWidget(score)
+bottom.addWidget(answer, alignment = Qt.AlignCenter)
+
+
+
+masterlayout = QVBoxLayout()
+masterlayout.addLayout(top)
+masterlayout.addLayout(middle)
+masterlayout.addLayout(middle2)
+masterlayout.addLayout(bottom)
+my_window.setLayout(masterlayout)
+
+
+
+idk = [radio1,radio2,radio3,radio4]
+
+
+
+def result():
+    radioGroup.hide()
+    ansgroupbox.show()
+    answer.setText("Next Question")
+
+
+
+def next():
+    radioGroup.show()
+    ansgroupbox.hide()   
+    answer.setText("Answer")
+    my_button.setExclusive(False)
+    radio1.setChecked(False)
+    radio2.setChecked(False)
+    radio3.setChecked(False)
+    radio4.setChecked(False)
+    my_button.setExclusive(True)
+
+
+
+def ask(q : Question):
+    shuffle(idk)
+    idk[0].setText(q.right)
+    idk[1].setText(q.wrong1)
+    idk[2].setText(q.wrong2)
+    idk[3].setText(q.wrong3)
+    question.setText(q.question)
+    resulttext.setText(q.right)
+    next()
+
+
+
+def show(res):
+    anstext.setText(res)
+    result()
+
+
+
+def next_question():
+    my_window.total +=1
+    current = randint(0,len(pyqt5question)-1)
+    q = pyqt5question[current]
+    print("Statistics\n-Total Question:",my_window.total,"\n-Right Answer:",my_window.score)
+    ask(q)
+
+
+
+def checking():
+    if idk[0].isChecked():
+        show("you did it")
+        my_window.score += 1
+        print("Statistics\n-Total Question:",my_window.total,"\n-Right Answer:",my_window.score)
+        print("Rating:",(my_window.score/my_window.total)*100,"%")
+        score.setText(str(my_window.score))
+    else:
+        if idk[1].isChecked() or idk[2].isChecked() or idk[3].isChecked():
+            show("wrong answer")
+            print("Rating:",(my_window.score/my_window.total)*100,"%")
+
+
+
+
+def test():
+    if answer.text() == "Answer":
+        checking()
+    else:
+        next_question()
+
+
+
+answer.clicked.connect(test)
+
+my_window.score = 0
+my_window.total = 0
+
+
+
+next_question()
+
+my_window.show()
+app.exec_()
